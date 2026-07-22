@@ -1,0 +1,39 @@
+name: Check eBay listings
+
+on:
+  schedule:
+    # Every 5 minutes. GitHub may delay this slightly under load -
+    # treat "every 5 min" as "roughly every 5 min".
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab
+
+permissions:
+  contents: write   # needed so the workflow can commit updated seen.json
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run checker
+        env:
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          EBAY_ENV: ${{ secrets.EBAY_ENV }}
+          DEFAULT_NTFY_TOPIC: ${{ secrets.DEFAULT_NTFY_TOPIC }}
+        run: python ebay_alert.py
+
+      - name: Commit updated seen.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add seen.json
+          git diff --staged --quiet || git commit -m "Update seen listings"
+          git push
