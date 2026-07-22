@@ -1,7 +1,7 @@
 [
   {
     "name": "Seismitoad SIR",
-    "query": "Seismitoad 105",
+    "query": "Seismitoad 105/86",
     "grade": [
       "6",
       "7",
@@ -14,7 +14,7 @@
   },
   {
     "name": "Umbreon Gold Star",
-    "query": "Umbreon Gold Star",
+    "query": "Umbreon Gold Star 17/17",
     "grade": "",
     "grader": "",
     "min_price": 50,
