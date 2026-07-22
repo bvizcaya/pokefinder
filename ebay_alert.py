@@ -61,8 +61,15 @@ def get_app_token(client_id, client_secret):
     return data["access_token"]
 
 
-def search_listings(token, query, max_price=None, limit=20):
-    """Search the Browse API for a query, optionally filtered by max price."""
+def search_listings(token, query, max_price=None, grade=None, grader=None, limit=20):
+    """Search the Browse API for a query, optionally filtered by max price
+    and by exact Grade / Professional Grader item aspects.
+
+    Using aspect_filter (instead of stuffing "PSA 10" into the keyword query)
+    means only listings eBay has actually tagged with that exact grade and
+    grading company come back - not just anything with matching words in
+    the title.
+    """
     filters = [f"categoryIds:{{{POKEMON_CARD_CATEGORY_ID}}}"]
     if max_price:
         filters.append(f"price:[..{max_price}],priceCurrency:USD")
@@ -73,6 +80,17 @@ def search_listings(token, query, max_price=None, limit=20):
         "sort": "newlyListed",
         "filter": ",".join(filters),
     }
+
+    # aspect_filter is its own query param, format:
+    #   categoryId:<id>,AspectName:{value}|AspectName2:{value2}
+    aspects = []
+    if grade:
+        aspects.append(f"Grade:{{{grade}}}")
+    if grader:
+        aspects.append(f"Professional Grader:{{{grader}}}")
+    if aspects:
+        params["aspect_filter"] = f"categoryId:{POKEMON_CARD_CATEGORY_ID}," + "|".join(aspects)
+
     query_string = "&".join(
         f"{k}={urllib.request.quote(v)}" for k, v in params.items()
     )
@@ -151,12 +169,14 @@ def main():
         name = card["name"]
         query = card["query"]
         max_price = card.get("max_price")
+        grade = card.get("grade")
+        grader = card.get("grader")
         topic = card.get("ntfy_topic") or default_topic
 
-        log(f"Checking: {name}")
+        log(f"Checking: {name} (grade={grade}, grader={grader})")
         seen_ids = set(seen.get(name, []))
 
-        listings = search_listings(token, query, max_price)
+        listings = search_listings(token, query, max_price, grade, grader)
         time.sleep(0.3)  # be polite between calls
 
         new_ids = []
