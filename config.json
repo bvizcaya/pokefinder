@@ -1,18 +1,18 @@
 [
   {
-    "name": "Charizard 1999 Base Set PSA 10",
-    "query": "Charizard 1999 Base Set",
-    "grade": "10",
+    "name": "Seismitoad SIR",
+    "query": "Seismitoad 105",
+    "grade": "8",
     "grader": "PSA",
-    "max_price": 8000,
+    "max_price": 240,
     "ntfy_topic": ""
   },
   {
-    "name": "Umbreon Gold Star PSA 9",
+    "name": "Umbreon Gold Star",
     "query": "Umbreon Gold Star",
     "grade": "9",
     "grader": "PSA",
-    "max_price": 3000,
+    "max_price": 100,
     "ntfy_topic": ""
   }
 ]
