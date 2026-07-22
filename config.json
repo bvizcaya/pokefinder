@@ -2,7 +2,11 @@
   {
     "name": "Seismitoad SIR",
     "query": "Seismitoad 105",
-    "grade": "8",
+    "grade": [
+      "6",
+      "7",
+      "8"
+    ],
     "grader": "PSA",
     "min_price": 100,
     "max_price": 240,
@@ -14,7 +18,7 @@
     "grade": "",
     "grader": "",
     "min_price": 50,
-    "max_price": 100,
+    "max_price": 90,
     "ntfy_topic": ""
   }
 ]
