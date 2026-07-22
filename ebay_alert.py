@@ -61,9 +61,9 @@ def get_app_token(client_id, client_secret):
     return data["access_token"]
 
 
-def search_listings(token, query, max_price=None, grade=None, grader=None, limit=20):
-    """Search the Browse API for a query, optionally filtered by max price
-    and by exact Grade / Professional Grader item aspects.
+def search_listings(token, query, min_price=None, max_price=None, grade=None, grader=None, limit=20):
+    """Search the Browse API for a query, optionally filtered by a min/max
+    price range and by exact Grade / Professional Grader item aspects.
 
     Using aspect_filter (instead of stuffing "PSA 10" into the keyword query)
     means only listings eBay has actually tagged with that exact grade and
@@ -71,8 +71,10 @@ def search_listings(token, query, max_price=None, grade=None, grader=None, limit
     the title.
     """
     filters = [f"categoryIds:{{{POKEMON_CARD_CATEGORY_ID}}}"]
-    if max_price:
-        filters.append(f"price:[..{max_price}],priceCurrency:USD")
+    if min_price or max_price:
+        low = str(min_price) if min_price else ""
+        high = str(max_price) if max_price else ""
+        filters.append(f"price:[{low}..{high}],priceCurrency:USD")
 
     params = {
         "q": query,
@@ -168,15 +170,17 @@ def main():
     for card in config:
         name = card["name"]
         query = card["query"]
+        min_price = card.get("min_price")
         max_price = card.get("max_price")
         grade = card.get("grade")
         grader = card.get("grader")
         topic = card.get("ntfy_topic") or default_topic
 
-        log(f"Checking: {name} (grade={grade}, grader={grader})")
+        log(f"Checking: {name} (grade={grade}, grader={grader}, "
+            f"price {min_price or 0}-{max_price or 'inf'})")
         seen_ids = set(seen.get(name, []))
 
-        listings = search_listings(token, query, max_price, grade, grader)
+        listings = search_listings(token, query, min_price, max_price, grade, grader)
         time.sleep(0.3)  # be polite between calls
 
         new_ids = []
@@ -187,15 +191,36 @@ def main():
 
             new_ids.append(item_id)
             title = item.get("title", name)
-            price = item.get("price", {}).get("value", "?")
+            price_raw = item.get("price", {}).get("value")
             currency = item.get("price", {}).get("currency", "")
             listing_url = item.get("itemWebUrl", "")
 
-            log(f"  + New listing: {title} - {price} {currency}")
+            # Client-side price double-check. eBay's server-side price filter
+            # is generally reliable, but this guarantees a listing is never
+            # alerted on unless it actually satisfies both bounds - it's the
+            # last checkpoint before a notification goes out.
+            try:
+                price_val = float(price_raw)
+            except (TypeError, ValueError):
+                price_val = None
+
+            price_ok = True
+            if price_val is not None:
+                if min_price and price_val < float(min_price):
+                    price_ok = False
+                if max_price and price_val > float(max_price):
+                    price_ok = False
+
+            if not price_ok:
+                log(f"  - Skipped (outside price range): {title} - "
+                    f"{price_raw} {currency}")
+                continue
+
+            log(f"  + New listing: {title} - {price_raw} {currency}")
             send_ntfy(
                 topic,
                 title=f"eBay: {name}",
-                message=f"{title}\n{price} {currency}",
+                message=f"{title}\n{price_raw} {currency}",
                 url=listing_url,
             )
             any_new = True
