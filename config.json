@@ -11,8 +11,8 @@
   {
     "name": "Umbreon Gold Star",
     "query": "Umbreon Gold Star",
-    "grade": "9",
-    "grader": "PSA",
+    "grade": "",
+    "grader": "",
     "min_price": 50,
     "max_price": 100,
     "ntfy_topic": ""
