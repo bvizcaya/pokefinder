@@ -43,17 +43,36 @@ List the cards you want to track. Each entry:
 ```json
 {
   "name": "Charizard 1999 Base Set PSA 10",
-  "query": "Charizard 1999 Base Set PSA 10",
+  "query": "Charizard 1999 Base Set",
+  "grade": "10",
+  "grader": "PSA",
   "max_price": 8000,
   "ntfy_topic": ""
 }
 ```
 
 - `name`: label used in notifications and internal tracking (keep unique).
-- `query`: the actual eBay search text - be as specific as you can.
+- `query`: just the card name/set - keep the grade OUT of this field (see
+  below for why).
+- `grade`: the exact numeric grade, e.g. `"10"`, `"9"`, `"9.5"`.
+- `grader`: the grading company, e.g. `"PSA"`, `"BGS"`, `"CGC"`.
 - `max_price`: optional. Omit or set to `null` for no limit.
 - `ntfy_topic`: optional. Leave `""` to use `DEFAULT_NTFY_TOPIC`, or set a
   different topic per card if you want separate notification channels.
+
+### Why grade/grader are separate fields, not part of the search text
+
+eBay's `q` search parameter is a fuzzy keyword match, same as typing into
+the search bar - `"Charizard PSA 10"` can still match a PSA 9 or an
+ungraded card if enough other words line up. Splitting `grade` and
+`grader` into their own fields lets the script use eBay's **aspect
+filter** instead, which checks the actual structured "Grade" and
+"Professional Grader" fields sellers fill in when listing a graded card.
+That's an exact match, not a keyword guess - so a PSA 9 will never show
+up when you've set `grade: "10"`.
+
+Leave `grade`/`grader` out (or blank) for a card if you want plain keyword
+search instead, e.g. for tracking raw (ungraded) cards.
 
 You can track up to ~15-17 cards at the 5-minute polling interval without
 exceeding eBay's default rate limit of 5,000 Browse API calls/day. If you
