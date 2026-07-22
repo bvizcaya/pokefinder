@@ -55,8 +55,11 @@ List the cards you want to track. Each entry:
 - `name`: label used in notifications and internal tracking (keep unique).
 - `query`: just the card name/set - keep the grade OUT of this field (see
   below for why).
-- `grade`: the exact numeric grade, e.g. `"10"`, `"9"`, `"9.5"`.
-- `grader`: the grading company, e.g. `"PSA"`, `"BGS"`, `"CGC"`.
+- `grade`: the exact numeric grade, e.g. `"10"`. To match **multiple
+  grades** for the same card (e.g. PSA 9 or PSA 10, either one), use a
+  list instead: `["9", "10"]`.
+- `grader`: the grading company, e.g. `"PSA"`. Also accepts a list, e.g.
+  `["PSA", "BGS"]`, if you don't care which company graded it.
 - `min_price` / `max_price`: optional. Omit either (or set to `null`) for
   no bound on that side. Useful for filtering out suspiciously cheap
   fakes/reprints as well as capping what you're willing to spend.
