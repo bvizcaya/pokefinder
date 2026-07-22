@@ -46,6 +46,7 @@ List the cards you want to track. Each entry:
   "query": "Charizard 1999 Base Set",
   "grade": "10",
   "grader": "PSA",
+  "min_price": 2000,
   "max_price": 8000,
   "ntfy_topic": ""
 }
@@ -56,9 +57,35 @@ List the cards you want to track. Each entry:
   below for why).
 - `grade`: the exact numeric grade, e.g. `"10"`, `"9"`, `"9.5"`.
 - `grader`: the grading company, e.g. `"PSA"`, `"BGS"`, `"CGC"`.
-- `max_price`: optional. Omit or set to `null` for no limit.
+- `min_price` / `max_price`: optional. Omit either (or set to `null`) for
+  no bound on that side. Useful for filtering out suspiciously cheap
+  fakes/reprints as well as capping what you're willing to spend.
 - `ntfy_topic`: optional. Leave `""` to use `DEFAULT_NTFY_TOPIC`, or set a
   different topic per card if you want separate notification channels.
+
+### How filtering actually works, end to end
+
+There are two layers, so a listing only ever reaches your phone if it
+passes both:
+
+1. **Server-side (eBay's own filters):** the search request sent to eBay
+   already includes the price range and the exact Grade/Professional
+   Grader aspect filter - eBay itself excludes non-matching listings
+   before returning anything.
+2. **Client-side (this script, as a safety net):** before sending a
+   notification, the script re-checks the returned price against your
+   `min_price`/`max_price` one more time. If eBay's price filter ever
+   behaves unexpectedly (rare, but it happens with third-party APIs), a
+   listing outside your range gets silently skipped - logged as
+   `Skipped (outside price range)` in the workflow run - rather than
+   alerting you incorrectly.
+
+To confirm it's working as expected on your own: open a completed
+GitHub Actions run and check the log output. Each card logs its filters
+up front (e.g. `grade=10, grader=PSA, price 2000-8000`), each new match
+is logged with its actual price, and anything filtered out is logged
+with a reason. That log is your ground truth for exactly what happened
+on that run.
 
 ### Why grade/grader are separate fields, not part of the search text
 
