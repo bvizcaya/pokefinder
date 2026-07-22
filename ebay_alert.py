@@ -61,9 +61,21 @@ def get_app_token(client_id, client_secret):
     return data["access_token"]
 
 
+def _as_list(value):
+    """Normalize a config field that may be a single value or a list."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(v) for v in value]
+    return [str(value)]
+
+
 def search_listings(token, query, min_price=None, max_price=None, grade=None, grader=None, limit=20):
     """Search the Browse API for a query, optionally filtered by a min/max
     price range and by exact Grade / Professional Grader item aspects.
+
+    grade/grader can each be a single value ("10") or a list of values
+    (["9", "10"]) to match any one of several grades/graders in one search.
 
     Using aspect_filter (instead of stuffing "PSA 10" into the keyword query)
     means only listings eBay has actually tagged with that exact grade and
@@ -84,12 +96,15 @@ def search_listings(token, query, min_price=None, max_price=None, grade=None, gr
     }
 
     # aspect_filter is its own query param, format:
-    #   categoryId:<id>,AspectName:{value}|AspectName2:{value2}
+    #   categoryId:<id>,AspectName:{value1|value2}|AspectName2:{value}
+    grades = _as_list(grade)
+    graders = _as_list(grader)
+
     aspects = []
-    if grade:
-        aspects.append(f"Grade:{{{grade}}}")
-    if grader:
-        aspects.append(f"Professional Grader:{{{grader}}}")
+    if grades:
+        aspects.append(f"Grade:{{{'|'.join(grades)}}}")
+    if graders:
+        aspects.append(f"Professional Grader:{{{'|'.join(graders)}}}")
     if aspects:
         params["aspect_filter"] = f"categoryId:{POKEMON_CARD_CATEGORY_ID}," + "|".join(aspects)
 
@@ -176,7 +191,9 @@ def main():
         grader = card.get("grader")
         topic = card.get("ntfy_topic") or default_topic
 
-        log(f"Checking: {name} (grade={grade}, grader={grader}, "
+        grade_display = "/".join(_as_list(grade)) or "any"
+        grader_display = "/".join(_as_list(grader)) or "any"
+        log(f"Checking: {name} (grade={grade_display}, grader={grader_display}, "
             f"price {min_price or 0}-{max_price or 'inf'})")
         seen_ids = set(seen.get(name, []))
 
