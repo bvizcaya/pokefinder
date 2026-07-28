@@ -94,5 +94,14 @@
     "min_price": 70,
     "max_price": 140,
     "ntfy_topic": ""
+  },
+  {
+    "name": "N's Zekrom IR",
+    "query": "N's Zekrom 031",
+    "grade": "",
+    "grader": "",
+    "min_price": 50,
+    "max_price": 80,
+    "ntfy_topic": ""
   }
 ]
