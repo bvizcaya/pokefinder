@@ -13,15 +13,6 @@
     "ntfy_topic": ""
   },
   {
-    "name": "Umbreon Gold Star",
-    "query": "Umbreon Gold Star 17/17",
-    "grade": "",
-    "grader": "",
-    "min_price": 60,
-    "max_price": 90,
-    "ntfy_topic": ""
-  },
-  {
     "name": "Blastoise SIR",
     "query": "Blastoise ex 200/165",
     "grade": [
