@@ -39,25 +39,60 @@
     "ntfy_topic": ""
   },
   {
-    "name": "Reshiram IR Graded",
-    "query": "N's Reshiram 167/159",
+    "name": "Reshiram SIR Graded",
+    "query": "Reshiram ex 166/086",
     "grade": [
       "6",
       "7",
       "8"
     ],
     "grader": "PSA",
-    "min_price": 5,
-    "max_price": 18,
+    "min_price": 125,
+    "max_price": 185,
     "ntfy_topic": ""
   },
   {
-    "name": "Reshiram IR",
-    "query": "N's Reshiram 167/159",
+    "name": "Reshiram SIR",
+    "query": "Reshiram ex 166/086",
     "grade": "",
     "grader": "",
-    "min_price": 8,
-    "max_price": 13,
+    "min_price": 160,
+    "max_price": 185,
+    "ntfy_topic": ""
+  },
+    {
+    "name": "Hydreigon SIR Graded",
+    "query": "Hydreigon ex 169/086",
+    "grade": [
+      "6",
+      "7",
+      "8"
+    ],
+    "grader": "PSA",
+    "min_price": 40,
+    "max_price": 70,
+    "ntfy_topic": ""
+  },
+  {
+    "name": "Hydreigon SIR",
+    "query": "Hydreigon ex 169/086",
+    "grade": "",
+    "grader": "",
+    "min_price": 50,
+    "max_price": 75,
+    "ntfy_topic": ""
+  },
+    {
+    "name": "Roaring Moon SIR",
+    "query": "Roaring Moon ex 162/131",
+    "grade": [
+      "6",
+      "7",
+      "8"
+    ],
+    "grader": "",
+    "min_price": 70,
+    "max_price": 140,
     "ntfy_topic": ""
   }
 ]
