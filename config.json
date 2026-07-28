@@ -46,5 +46,27 @@
     "min_price": 70,
     "max_price": 100,
     "ntfy_topic": ""
-  }
+  },
+  {
+    "name": "Reshiram IR Graded",
+    "query": "N's Reshiram 167/159",
+    "grade": [
+      "6",
+      "7",
+      "8"
+    ],
+    "grader": "PSA",
+    "min_price": 5,
+    "max_price": 18,
+    "ntfy_topic": ""
+  },
+  {
+    "name": "Reshiram IR",
+    "query": "N's Reshiram 167/159",
+    "grade": "",
+    "grader": "",
+    "min_price": 8,
+    "max_price": 15,
+    "ntfy_topic": ""
+  },
 ]
