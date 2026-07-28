@@ -34,7 +34,7 @@
       "8"
     ],
     "grader": "PSA",
-    "min_price": 70,
+    "min_price": 80,
     "max_price": 100,
     "ntfy_topic": ""
   },
@@ -57,7 +57,7 @@
     "grade": "",
     "grader": "",
     "min_price": 8,
-    "max_price": 12,
+    "max_price": 13,
     "ntfy_topic": ""
   }
 ]
